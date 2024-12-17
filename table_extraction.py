@@ -1,45 +1,49 @@
 import pdfplumber
+import pandas as pd
 
-def extract_pdf_tables(pdf_path, page_number):
+def extract_tables_all_pages(pdf_path):
     """
-    Extract tables from a specific page in a PDF file.
+    Extract tables from all pages of a PDF.
 
     Args:
         pdf_path (str): Path to the PDF file.
-        page_number (int): Page number (0-indexed) to extract tables from.
 
     Returns:
-        tables (list): List of extracted tables.
+        all_tables (list): A list containing tables from all pages.
     """
-    try:
-        with pdfplumber.open(pdf_path) as pdf:
-            # Check if the page number is valid
-            if page_number < len(pdf.pages):
-                print(f"Extracting tables from Page {page_number + 1}...")
-                tables = pdf.pages[page_number].extract_tables()
-                return tables
-            else:
-                print("Invalid page number. Page does not exist.")
-                return []
-    except Exception as e:
-        print(f"Error occurred: {e}")
-        return []
+    all_tables = []
 
-if __name__ == "__main__":
-    # Input PDF file path
-    pdf_path = "example.pdf"  # Update with the path to your PDF
-    page_number = 5 # Page 6 (0-indexed, so use 5)
+    with pdfplumber.open(pdf_path) as pdf:
+        # Loop through all pages
+        for page_number, page in enumerate(pdf.pages):
+            print(f"\nExtracting tables from page {page_number + 1}...")
+            tables = page.extract_tables()
 
-    # Extract tables
-    tables = extract_pdf_tables(pdf_path, page_number)
+            # Save tables with page number info
+            for table in tables:
+                all_tables.append({"page": page_number + 1, "table": table})
 
-    # Display extracted tables
-    if tables:
-        print("\nExtracted Tables:")
-        for i, table in enumerate(tables):
-            print(f"\nTable {i + 1}:")
-            for row in table:
-                print(row)
-    else:
-        print("No tables found on the specified page.")
+                # Print for preview
+                print(f"Table on Page {page_number + 1}:")
+                for row in table:
+                    print(row)
+
+    return all_tables
+
+# Extract tables from all pages
+pdf_path = "example.pdf"
+all_tables = extract_tables_all_pages(pdf_path)
+
+# Save all tables as DataFrames (optional)
+for i, table_data in enumerate(all_tables):
+    page_number = table_data["page"]
+    table = table_data["table"]
+    df = pd.DataFrame(table[1:], columns=table[0])  # First row as headers
+    print(f"\nTable {i + 1} on Page {page_number} as DataFrame:")
+    print(df)
+# Save extracted tables to CSV
+output_file = f"table_page_{page_number + 1}.csv"
+df.to_csv(output_file, index=False)
+print(f"Table saved to {output_file}")
+
 
