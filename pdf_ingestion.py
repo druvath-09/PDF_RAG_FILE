@@ -2,8 +2,7 @@ import os
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 import fitz  # PyMuPDF
 
-from table_extraction import extract_pdf_tables
-# from table_extraction import extract_tables_all_pages
+from table_extraction import extract_tables_all_pages
 
 def extract_pdf_text(pdf_path):
     pdf_doc = fitz.open(pdf_path)
@@ -21,13 +20,11 @@ pdf_path = "example.pdf"
 
 # Extract tables from Page 6 (0-indexed, so use 5)
 page_number = 5
-tables = extract_pdf_tables(pdf_path, page_number)
-# all_tables = extract_tables_all_pages(pdf_path)
+all_tables = extract_tables_all_pages(pdf_path)
 
 # Print the extracted tables
 print("Extracted Tables:")
-# for table in all_tables:
-for table in tables:
+for table in all_tables:
     print(table)
 
 # to chunk the extracted text
@@ -71,7 +68,7 @@ print("Relevant Chunks:", relevant_chunks)
 
 
 import openai
-openai.api_key = "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"
+openai.api_key = "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"
 def generate_response(context, query):
     """
     Generate a response using OpenAI's ChatCompletion API.
@@ -84,7 +81,7 @@ def generate_response(context, query):
         str: Response from the model.
     """
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",  # Switch to "gpt-4" if available
+        model="gpt-4o-mini",  # Switch to "gpt-4" if available
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": f"Context: {context}\n\nQuestion: {query}"}
@@ -94,3 +91,4 @@ def generate_response(context, query):
 response = generate_response(" ".join(relevant_chunks), query)
 print("LLM Response:")
 print(response)
+
