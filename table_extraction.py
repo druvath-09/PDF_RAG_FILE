@@ -41,9 +41,9 @@ for i, table_data in enumerate(all_tables):
     df = pd.DataFrame(table[1:], columns=table[0])  # First row as headers
     print(f"\nTable {i + 1} on Page {page_number} as DataFrame:")
     print(df)
-# Save extracted tables to CSV
-output_file = f"table_page_{page_number + 1}.csv"
-df.to_csv(output_file, index=False)
-print(f"Table saved to {output_file}")
+    # Save extracted tables to CSV
+    output_file = f"table_page_{page_number + 1}.csv"
+    df.to_csv(output_file, index=False)
+    print(f"Table saved to {output_file}")
 
 
