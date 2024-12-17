@@ -91,3 +91,6 @@ def generate_response(context, query):
         ]
     )
     return response["choices"][0]["message"]["content"]
+response = generate_response(" ".join(relevant_chunks), query)
+print("LLM Response:")
+print(response)
