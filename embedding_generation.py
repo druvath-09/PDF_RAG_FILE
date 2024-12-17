@@ -3,16 +3,6 @@ import faiss
 from sentence_transformers import SentenceTransformer
 
 def generate_embeddings(chunks, model_name="all-MiniLM-L6-v2"):
-    """
-    Generate embeddings for a list of text chunks using SentenceTransformer.
-
-    Args:
-        chunks (list): List of text chunks.
-        model_name (str): SentenceTransformer model to use.
-
-    Returns:
-        np.array: Numpy array of embeddings.
-    """
     model = SentenceTransformer(model_name)
     embeddings = model.encode(chunks)
     return np.array(embeddings)
